@@ -1,0 +1,51 @@
+.umg__calendar{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+    width: 70vw;
+}
+
+.umg__calendar .umg__calendar__dropdowns{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    position: unset;
+    margin-bottom: 75px;
+}
+
+.umg__calendar .umg__labels{
+    width: 120px;
+    border-radius: 15px;
+    font-size: 22px;
+    border: 1px solid #CECECE;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+}
+
+#year__dropdown__label{
+    display: flex;
+    position: unset;
+    align-self: center;
+    font-size: 35px;
+    transform-origin: unset;
+}
+
+table {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    width: 60vw;
+    border-collapse: collapse;
+}
+  
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+  
+th {
+    background-color: #d4eafc;
+}
