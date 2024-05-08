@@ -7,4 +7,5 @@ export type UmgCalendarState = {
     saveReminderTime: string;
     reminderText: string;
     locationText: string;
+    showEditModal: boolean;
 };

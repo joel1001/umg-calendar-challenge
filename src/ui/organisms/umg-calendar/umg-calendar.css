@@ -117,11 +117,18 @@ table {
 
 td{
     position: relative;
+    z-index: 0;
 }
-td:active, td:hover {
+td:active,
+td:hover {
     background-color: #d4eafc;
     opacity: 0.5;
     cursor: pointer;
+}
+td:hover .umg__reminder__wrapper .umg__reminder__details, td:active .umg__reminder__wrapper .umg__reminder__details{
+    background-color: #eafcd4;
+    opacity: 1;
+    z-index: 1000;
 }
 
 .umg__reminder__wrapper{
@@ -141,22 +148,32 @@ td:active, td:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
     border-radius: 15px;
     display: none;
-    width: max-content;
+    min-width: 173px;
+    min-height: 40px;
     position: absolute;
-    top: 0%;
-    left: 80%;
+    top: 20%;
+    left: 0%;
     background-color: #eafcd4;
     border: 1px solid #ccc;
     opacity: 1;
-    padding: 10px;
-    z-index: 10;
-}
+    z-index: 1000;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+  
 
 .umg__remider__location{
     margin-right: 15px;
+    height: 100%;
 }
 
 .umg__reminder__container:hover .umg__reminder__details,
 .umg__reminder__container:focus .umg__reminder__details {
     display: flex;
+}
+
+.umg__details__icons svg {
+    margin-left: 10px;
+    height: 100%;
+    font-size: 22px;
 }
