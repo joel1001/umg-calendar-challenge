@@ -33,19 +33,10 @@ const UMGCalendar = () => {
         }));
     }, [umgCalendarState.selectedYear, umgCalendarState.selectedMonth]);
 
-    const handleYearClicked = useCallback((event: SelectChangeEvent<number>) => {
-        const selectedYear = event.target.value as number;
+    const handleYearClicked = useCallback((value: object) => {
         setUmgCalendarState(prevState => ({
             ...prevState,
-            selectedYear: selectedYear
-        }));
-    }, []);
-
-    const handleMonthClicked = useCallback((event: SelectChangeEvent<number>) => {
-        const selecteMonth = event.target.value as number;
-        setUmgCalendarState(prevState => ({
-            ...prevState,
-            selectedMonth: selecteMonth
+            ...value
         }));
     }, []);
 
@@ -53,7 +44,7 @@ const UMGCalendar = () => {
         <div className="umg__calendar">
             <FormControl className='umg__calendar__dropdowns'>
                 <InputLabel id="year__dropdown__label">Select Year:</InputLabel>
-                <Select onChange={handleYearClicked} className='umg__labels' labelId="year__dropdown__label" value={umgCalendarState.selectedYear}>
+                <Select onChange={(e) => handleYearClicked({selectedYear: e.target.value as number})} className='umg__labels' labelId="year__dropdown__label" value={umgCalendarState.selectedYear}>
                     {years.map((year, index) => (
                         <MenuItem key={index} value={year}>
                             {year}
@@ -62,7 +53,7 @@ const UMGCalendar = () => {
                 </Select>
 
                 <InputLabel id="year__dropdown__label">Select Month:</InputLabel>
-                <Select onChange={handleMonthClicked} className='umg__labels' labelId="year__dropdown__label" value={umgCalendarState.selectedMonth}>
+                <Select onChange={(e) => handleYearClicked({selectedMonth: e.target.value as number})} className='umg__labels' labelId="year__dropdown__label" value={umgCalendarState.selectedMonth}>
                     {monthsNames.map((month, index) => (
                         <MenuItem key={index} value={index}>
                             {month}
