@@ -1,3 +1,4 @@
+// slice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IReminder, Month } from "./slice-interface";
 
@@ -9,7 +10,7 @@ const remindersSlice = createSlice({
     reducers: {
         setReminders: (state, action: PayloadAction<{ [key: number]: Month }>) => {
             return action.payload;
-        },
+        }
     }
 });
 
