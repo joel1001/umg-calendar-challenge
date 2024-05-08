@@ -4,7 +4,7 @@
     justify-content: center;
     align-items: center;
     height: auto;
-    width: 70%;
+    width: 90%;
     margin: 80px auto;
     padding: 0 0 100px 0;
     background: #fff;   
@@ -16,7 +16,7 @@
     -webkit-box-shadow: rgba(0,0,0,0.5) 0px 0 25px;
     -moz-box-shadow: rgba(0,0,0,0.5) 0 0 25px;
     box-shadow: rgba(0,0,0,0.5) 0 0 25px;
-    padding: 0 10px 30px 10px;
+    padding: 0 30px 30px;
 }
 
 .umg__calendar .calendar__header {
@@ -31,6 +31,54 @@
 }
 .umg__calendar .calendar__header img {
     max-width: 40px;
+}
+
+.umg__calendar__container {
+    display: flex;
+}
+
+.umg__calendar__container .calendar__table{
+    flex: 60%;
+}
+
+.umg__calendar__container .caldendar__details{
+    flex: 40%;
+}
+.umg__calendar__container .caldendar__details .vertical-timeline-element-icon img {
+    width: 100%;
+    padding: 10px;
+}
+
+.umg__calendar__container .caldendar__details .vertical-timeline.vertical-timeline--two-columns:before {
+    background: #bbbbbb;
+}
+
+.umg__calendar__container .caldendar__details .vertical-timeline {
+    padding: 0;
+    max-height: 550px;
+    overflow: scroll;
+}
+
+.umg__calendar__container .caldendar__details .calendar__details_header {
+    height: 120px;
+    background: #d4eafc;
+    -webkit-border-radius: 20px 20px 0 0;
+    -moz-border-radius: 20px 20px 0 0;
+    border-radius: 20px 20px 0 0;
+    /* box-shadow */
+    -webkit-box-shadow: rgba(0,0,0,0.5) 0px 0 10px;
+    -moz-box-shadow: rgba(0,0,0,0.5) 0 0 10px;
+    box-shadow: rgba(0,0,0,0.5) 0 0 10px;
+    margin-bottom: 30px;
+}
+
+.umg__calendar__container .caldendar__details .calendar__details_header p {
+    margin: 0;
+    display: table-cell;
+    vertical-align: middle;
+    height: 120px;
+    padding-left: 40px;
+    font-size: 20px;
 }
 
 .umg__calendar .umg__calendar__dropdowns{
@@ -69,7 +117,7 @@
     box-shadow: rgba(0,0,0,0.5) 0 0 25px;
 }
 
-.dialog__box h2 {
+.dialog__box h2, .dialog__box p, .dialog__box span, .dialog__box input {
     font-family: "Montserrat", sans-serif;
 }
 
@@ -96,13 +144,15 @@
 }
 
 table {
-    border: 1px solid #ccc;
+    order: 1px solid #ccc;
     border-collapse: collapse;
     margin: 0;
     padding: 0;
     table-layout: fixed;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    width: 60vw;
+    border-radius: 20px;
+    box-shadow: rgba(0,0,0,0.5) 0 0 25px;
+    width: 96%;
+    overflow: hidden;
   }
   
   table caption {
@@ -120,7 +170,7 @@ table {
   table td {
     padding: .625em;
     text-align: center;
-    height: 60px;
+    height: 100px;
   }
   
   table th {

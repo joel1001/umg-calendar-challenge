@@ -1,5 +1,7 @@
 import { useEffect, useState, useCallback, MouseEvent, ChangeEvent } from "react";
 import ReminderIcon from '../../../assets/images/reminder-icon.png';
+import { VerticalTimeline, VerticalTimelineElement }  from 'react-vertical-timeline-component';
+import 'react-vertical-timeline-component/style.min.css';
 import {
   eachDayOfInterval,
   startOfMonth,
@@ -216,83 +218,119 @@ const UMGCalendar = () => {
           ))}
         </Select>
       </FormControl>
+      <div className="umg__calendar__container">
+        <div className="calendar__table">
+          <table>
+            <thead>
+              <tr>
+                {daysNames.map((day, idx) => (
+                  <th key={idx}>{day}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[...Array(6)].map((_, weekIndex) => {
+                const startIdx = weekIndex * 7;
+                const endIdx = startIdx + 7;
+                const weekDays = umgCalendarState.days.slice(startIdx, endIdx);
 
-      <table>
-        <thead>
-          <tr>
-            {daysNames.map((day, idx) => (
-              <th key={idx}>{day}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {[...Array(6)].map((_, weekIndex) => {
-            const startIdx = weekIndex * 7;
-            const endIdx = startIdx + 7;
-            const weekDays = umgCalendarState.days.slice(startIdx, endIdx);
-
-            if (
-              !weekDays.some((day) =>
-                isSameMonth(
-                  day,
-                  new Date(
-                    umgCalendarState.selectedYear,
-                    umgCalendarState.selectedMonth
-                  )
-                )
-              )
-            ) {
-              return null;
-            }
-            return (
-              <tr key={weekIndex}>
-                {weekDays.map((day, dayIndex) => {
-                  if (
-                    !day ||
-                    !isSameMonth(
+                if (
+                  !weekDays.some((day) =>
+                    isSameMonth(
                       day,
                       new Date(
                         umgCalendarState.selectedYear,
                         umgCalendarState.selectedMonth
                       )
                     )
-                  ) {
-                    return <td key={`${weekIndex}-${dayIndex}`}></td>;
-                  }else{
-                    dayCounter++;
-                    tdelem = <td onClick={addDayEvent} key={`${weekIndex}-${dayIndex}`}>
-                        {format(day, "d")}
-                        { 
-                            reminders[umgCalendarState.selectedYear] && reminders[umgCalendarState.selectedYear][umgCalendarState.selectedMonth] && reminders[umgCalendarState.selectedYear][umgCalendarState.selectedMonth][dayCounter] ?
-                                <div className="umg__reminder__wrapper">
-                                    {reminders[umgCalendarState.selectedYear][umgCalendarState.selectedMonth][dayCounter].map((reminder: any, idx: number)=>(
-                                        <div className="umg__reminder__container">
-                                            <div className="umg__remider">
-                                                {reminder.reminderTime}<FaExternalLinkAlt/>
-                                            </div>
-                                            <div className="umg__reminder__details">
-                                                <div className="umg__remider__location">
-                                                    {reminder.reminderLocation}
+                  )
+                ) {
+                  return null;
+                }
+                return (
+                  <tr key={weekIndex}>
+                    {weekDays.map((day, dayIndex) => {
+                      if (
+                        !day ||
+                        !isSameMonth(
+                          day,
+                          new Date(
+                            umgCalendarState.selectedYear,
+                            umgCalendarState.selectedMonth
+                          )
+                        )
+                      ) {
+                        return <td key={`${weekIndex}-${dayIndex}`}></td>;
+                      }else{
+                        dayCounter++;
+                        tdelem = <td onClick={addDayEvent} key={`${weekIndex}-${dayIndex}`}>
+                            {format(day, "d")}
+                            { 
+                                reminders[umgCalendarState.selectedYear] && reminders[umgCalendarState.selectedYear][umgCalendarState.selectedMonth] && reminders[umgCalendarState.selectedYear][umgCalendarState.selectedMonth][dayCounter] ?
+                                    <div className="umg__reminder__wrapper">
+                                        {reminders[umgCalendarState.selectedYear][umgCalendarState.selectedMonth][dayCounter].map((reminder: any, idx: number)=>(
+                                            <div className="umg__reminder__container">
+                                                <div className="umg__remider">
+                                                    {reminder.reminderTime}<FaExternalLinkAlt/>
                                                 </div>
-                                                <div>
-                                                    {reminder.reminderDescription}
+                                                <div className="umg__reminder__details">
+                                                    <div className="umg__remider__location">
+                                                        {reminder.reminderLocation}
+                                                    </div>
+                                                    <div>
+                                                        {reminder.reminderDescription}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            :
-                                null
-                        }
-                    </td> 
-                    return tdelem;
-                  }
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                                        ))}
+                                    </div>
+                                :
+                                    null
+                            }
+                        </td> 
+                        return tdelem;
+                      }
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <div className="caldendar__details">
+          <div className="calendar__details_header">
+            {
+              reminders[umgCalendarState.selectedYear] && reminders[umgCalendarState.selectedYear][umgCalendarState.selectedMonth] && reminders[umgCalendarState.selectedYear][umgCalendarState.selectedMonth][umgCalendarState.dayNumber || 0] ?
+                <p>
+                  {umgCalendarState.dayNumber}, {monthsNames[umgCalendarState.selectedMonth]}, {umgCalendarState.selectedYear}
+                </p>
+              : <p>There are no events planned for this day.</p>
+            }
+          </div>
+          { 
+            reminders[umgCalendarState.selectedYear] && reminders[umgCalendarState.selectedYear][umgCalendarState.selectedMonth] && reminders[umgCalendarState.selectedYear][umgCalendarState.selectedMonth][umgCalendarState.dayNumber || 0] ?
+              <VerticalTimeline
+                layout={'1-column-left'}
+                >
+                {reminders[umgCalendarState.selectedYear][umgCalendarState.selectedMonth][umgCalendarState.dayNumber || 0]
+                  .map((reminder: any, i: number) => (
+                    <VerticalTimelineElement
+                      className="vertical-timeline-element--work"
+                      iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
+                      icon={<img src={ReminderIcon} alt="myLogo" />}
+                    >
+                      <h3 className="vertical-timeline-element-title">{reminder.reminderTime}</h3>
+                      <h4 className="vertical-timeline-element-subtitle">{reminder.reminderDescription}</h4>
+                      <p>{reminder.reminderLocation}</p>
+                    </VerticalTimelineElement>
+                ))}
+              </VerticalTimeline>
+              :
+              null
+          }
+        </div>
+      </div>
+      
       <Dialog
         open={umgCalendarState.displayDayReminderModal}
         onClose={closeModal}
