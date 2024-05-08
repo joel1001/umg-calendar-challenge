@@ -327,6 +327,7 @@ const UMGCalendar = () => {
       <Dialog
         open={umgCalendarState.displayDayReminderModal}
         onClose={closeModal}
+        className="dialog__box"
         maxWidth='xl'
       >
         <DialogTitle>{`Add reminder to ${
