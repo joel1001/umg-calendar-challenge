@@ -49,3 +49,9 @@ th, td {
 th {
     background-color: #d4eafc;
 }
+
+td:active, td:hover {
+    background-color: #d4eafc;
+    opacity: 0.5;
+    cursor: pointer;
+}

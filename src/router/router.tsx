@@ -1,10 +1,9 @@
-// router/router.js
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Import BrowserRouter
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import UMGCalendar from '../ui/organisms/umg-calendar/umg-calendar';
 
 const AppRouter = () => {
     return (
-        <Router> {/* Use BrowserRouter here */}
+        <Router>
             <Routes>
                 <Route path="/" element={<UMGCalendar />} />
                 <Route path="/home" element={<UMGCalendar />} />
