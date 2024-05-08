@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, MouseEvent, ChangeEvent } from "react";
+import ReminderIcon from '../../../assets/images/reminder-icon.png';
 import {
   eachDayOfInterval,
   startOfMonth,
@@ -152,6 +153,11 @@ const UMGCalendar = () => {
 
   return (
     <div className="umg__calendar">
+      <div className="calendar__header">
+        <span className="material-symbols-outlined"></span>
+        <img src={ReminderIcon} alt="Reminder Icon"/>
+        <span>UMG Remider Calendar</span>
+      </div>
       <FormControl className="umg__calendar__dropdowns">
         <InputLabel id="year__dropdown__label">Select Year:</InputLabel>
         <Select
