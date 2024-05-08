@@ -5,10 +5,11 @@ export interface IReminder {
 type Reminder = {
     reminderTime: string;
     reminderLocation: string;
+    reminderDescription: string;
 }
 
 export type Month = {
-    [key: string]: Day;
+    [key: number]: Day;
 }
 
 type Day = {

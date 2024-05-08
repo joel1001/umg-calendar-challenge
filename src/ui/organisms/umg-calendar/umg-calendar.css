@@ -128,78 +128,50 @@ table {
     letter-spacing: .1em;
     text-transform: uppercase;
     background-color: #d4eafc;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-  
-  td:active, td:hover {
+}
+
+td{
+    position: relative;
+}
+td:active, td:hover {
     background-color: #d4eafc;
     opacity: 0.5;
     cursor: pointer;
 }
 
-@media screen and (max-width: 600px) {
-    .umg__calendar{
-        width: 90%;
-        margin: 30px auto;
-    }
-    table {
-        width: 90%;
-    }
-    .umg__calendar .umg__calendar__dropdowns {
-        margin-bottom: 30px;
-    }
-    .umg__calendar .umg__labels {
-        height: 40px;
-    }
+.umg__reminder__wrapper{
+    overflow-y: auto;
 }
 
+.umg__remider{
+    background-color: blanchedalmond;
+    border-radius: 10px;
+}
 
+.umg__remider svg {
+    margin-left: 15px;
+}
 
-/*
-  @media screen and (max-width: 600px) {
-    table {
-      border: 0;
-    }
-  
-    table caption {
-      font-size: 1.3em;
-    }
-    
-    table thead {
-      border: none;
-      clip: rect(0 0 0 0);
-      height: 1px;
-      margin: -1px;
-      overflow: hidden;
-      padding: 0;
-      position: absolute;
-      width: 1px;
-    }
-    
-    table tr {
-      border-bottom: 3px solid #ddd;
-      display: block;
-      margin-bottom: .625em;
-    }
-    
-    table td {
-      border-bottom: 1px solid #ddd;
-      display: block;
-      font-size: .8em;
-      text-align: right;
-    }
-    
-    table td::before {
-      content: attr(data-label);
-      float: left;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-    
-    table td:last-child {
-      border-bottom: 0;
-    }
-  }
+.umg__reminder__details {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    border-radius: 15px;
+    display: none;
+    width: max-content;
+    position: absolute;
+    top: 0%;
+    left: 80%;
+    background-color: #eafcd4;
+    border: 1px solid #ccc;
+    opacity: 1;
+    padding: 10px;
+    z-index: 10;
+}
 
-*/
+.umg__remider__location{
+    margin-right: 15px;
+}
+
+.umg__reminder__container:hover .umg__reminder__details,
+.umg__reminder__container:focus .umg__reminder__details {
+    display: flex;
+}
