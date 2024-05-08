@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { eachMonthOfInterval, eachDayOfInterval, startOfMonth, endOfMonth, startOfWeek, endOfWeek, format, isSameMonth } from 'date-fns';
+import { useEffect, useState, useCallback, MouseEvent } from 'react';
+import { eachDayOfInterval, startOfMonth, endOfMonth, startOfWeek, endOfWeek, format, isSameMonth } from 'date-fns';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { SelectChangeEvent } from '@mui/material';
 
 import { UmgCalendarState } from './umg-calendar-interface';
 
@@ -32,11 +33,27 @@ const UMGCalendar = () => {
         }));
     }, [umgCalendarState.selectedYear, umgCalendarState.selectedMonth]);
 
+    const handleYearClicked = useCallback((event: SelectChangeEvent<number>) => {
+        const selectedYear = event.target.value as number;
+        setUmgCalendarState(prevState => ({
+            ...prevState,
+            selectedYear: selectedYear
+        }));
+    }, []);
+
+    const handleMonthClicked = useCallback((event: SelectChangeEvent<number>) => {
+        const selecteMonth = event.target.value as number;
+        setUmgCalendarState(prevState => ({
+            ...prevState,
+            selectedMonth: selecteMonth
+        }));
+    }, []);
+
     return (
         <div className="umg__calendar">
             <FormControl className='umg__calendar__dropdowns'>
                 <InputLabel id="year__dropdown__label">Select Year:</InputLabel>
-                <Select className='umg__labels' labelId="year__dropdown__label" value={umgCalendarState.selectedYear}>
+                <Select onChange={handleYearClicked} className='umg__labels' labelId="year__dropdown__label" value={umgCalendarState.selectedYear}>
                     {years.map((year, index) => (
                         <MenuItem key={index} value={year}>
                             {year}
@@ -45,7 +62,7 @@ const UMGCalendar = () => {
                 </Select>
 
                 <InputLabel id="year__dropdown__label">Select Month:</InputLabel>
-                <Select className='umg__labels' labelId="year__dropdown__label" value={umgCalendarState.selectedMonth}>
+                <Select onChange={handleMonthClicked} className='umg__labels' labelId="year__dropdown__label" value={umgCalendarState.selectedMonth}>
                     {monthsNames.map((month, index) => (
                         <MenuItem key={index} value={index}>
                             {month}
