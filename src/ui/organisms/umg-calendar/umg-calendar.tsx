@@ -23,7 +23,10 @@ import {
 } from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers";
 import { useSelector, useDispatch } from "react-redux";
+import { FaExternalLinkAlt } from "react-icons/fa";
+import Tooltip from '@mui/material/Tooltip';
 
+import { IReminder } from "../../../redux/slices/slice-interface";
 import { setReminders } from "../../../redux/slices/slice";
 import { UmgCalendarState } from "./umg-calendar-interface";
 import "./umg-calendar.css";
@@ -31,7 +34,7 @@ import "./umg-calendar.css";
 const UMGCalendar = () => {
   const reminders = useSelector((state: any) => state.reminders);
   const dispatch = useDispatch();
-
+    console.log('reminders', reminders)
   const monthsNames = [
     "January",
     "February",
@@ -88,45 +91,35 @@ const UMGCalendar = () => {
       ...prevState,
       days: daysOfMonth,
     }));
-  }, [umgCalendarState.selectedYear, umgCalendarState.selectedMonth]);
+  }, [umgCalendarState.selectedYear, umgCalendarState.selectedMonth, reminders]);
 
   const handleYearClicked = useCallback((value: object) => {
     setUmgCalendarState((prevState) => ({
       ...prevState,
       ...value,
     }));
-  }, []);
+  }, [reminders]);
 
   const addDayEvent = useCallback((event: MouseEvent<HTMLDivElement>) => {
+    const target = event.currentTarget.childNodes[0];
+    let dayNumber = target.textContent
+    if (target.firstChild instanceof HTMLElement) {
+      dayNumber = target.firstChild.textContent;
+    }
     setUmgCalendarState((prevState) => ({
       ...prevState,
-      dayNumber: event.currentTarget.textContent,
+      dayNumber: dayNumber,
       displayDayReminderModal: true,
     }));
-    // const dayValue: string | null = event.currentTarget.textContent;
-    // console.log('dayValue', dayValue);
-    // console.log('object', {
-    //     [umgCalendarState.selectedYear]: {
-    //         [umgCalendarState.selectedMonth]: {
-    //             day: [{ reminderTime: '8:00 am', reminderLocation: 'San José, CR' }]
-    //         }
-    //     }
-    // });
-    // if(dayValue){
-    //     dispatch(setReminders({
-    //         [umgCalendarState.selectedYear]: {
-    //             [umgCalendarState.selectedMonth]: {
-    //                 [dayValue]: [{ reminderTime: '8:00 am', reminderLocation: 'San José, CR' }]
-    //             }
-    //         }
-    //     }));
-    // }
   }, []);
 
   const saveReminderTime = (time: any) => {
+    const hours = time.$d.getHours();
+    const minutes = time.$d.getMinutes();
+    const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
     setUmgCalendarState((prevState) => ({
       ...prevState,
-      saveReminderTime: time,
+      saveReminderTime: formattedTime,
     }));
   };
 
@@ -150,6 +143,38 @@ const UMGCalendar = () => {
       displayDayReminderModal: false,
     }));
   };
+
+  const storeReminderAndData = () => {
+    if (umgCalendarState.dayNumber) {
+        closeModal();
+        const selectedYear = umgCalendarState.selectedYear;
+        const selectedMonth = umgCalendarState.selectedMonth;
+        const dayNumber = umgCalendarState.dayNumber;
+
+        const newState: IReminder = {
+            ...reminders,
+            [selectedYear]: {
+                ...reminders[selectedYear],
+                [selectedMonth]: {
+                    ...reminders[selectedYear]?.[selectedMonth],
+                    [dayNumber]: [
+                        ...(reminders[selectedYear]?.[selectedMonth]?.[dayNumber] || []),
+                        {
+                            reminderTime: umgCalendarState.saveReminderTime,
+                            reminderLocation: umgCalendarState.locationText,
+                            reminderDescription: umgCalendarState.reminderText
+                        }
+                    ]
+                }
+            }
+        };
+
+        dispatch(setReminders(newState));
+    }
+};
+
+  let dayCounter = 0;
+  let tdelem;
 
   return (
     <div className="umg__calendar">
@@ -205,6 +230,7 @@ const UMGCalendar = () => {
             const startIdx = weekIndex * 7;
             const endIdx = startIdx + 7;
             const weekDays = umgCalendarState.days.slice(startIdx, endIdx);
+
             if (
               !weekDays.some((day) =>
                 isSameMonth(
@@ -232,12 +258,35 @@ const UMGCalendar = () => {
                     )
                   ) {
                     return <td key={`${weekIndex}-${dayIndex}`}></td>;
+                  }else{
+                    dayCounter++;
+                    tdelem = <td onClick={addDayEvent} key={`${weekIndex}-${dayIndex}`}>
+                        {format(day, "d")}
+                        { 
+                            reminders[umgCalendarState.selectedYear] && reminders[umgCalendarState.selectedYear][umgCalendarState.selectedMonth] && reminders[umgCalendarState.selectedYear][umgCalendarState.selectedMonth][dayCounter] ?
+                                <div className="umg__reminder__wrapper">
+                                    {reminders[umgCalendarState.selectedYear][umgCalendarState.selectedMonth][dayCounter].map((reminder: any, idx: number)=>(
+                                        <div className="umg__reminder__container">
+                                            <div className="umg__remider">
+                                                {reminder.reminderTime}<FaExternalLinkAlt/>
+                                            </div>
+                                            <div className="umg__reminder__details">
+                                                <div className="umg__remider__location">
+                                                    {reminder.reminderLocation}
+                                                </div>
+                                                <div>
+                                                    {reminder.reminderDescription}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            :
+                                null
+                        }
+                    </td> 
+                    return tdelem;
                   }
-                  return (
-                    <td onClick={addDayEvent} key={`${weekIndex}-${dayIndex}`}>
-                      {format(day, "d")}
-                    </td>
-                  );
                 })}
               </tr>
             );
@@ -283,7 +332,7 @@ const UMGCalendar = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={closeModal}>Cancel</Button>
-          <Button onClick={() => {}}>Add Reminder</Button>
+          <Button onClick={storeReminderAndData}>Add Reminder</Button>
         </DialogActions>
       </Dialog>
     </div>
