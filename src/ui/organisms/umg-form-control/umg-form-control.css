@@ -1,0 +1,43 @@
+.umg__calendar .umg__calendar__dropdowns{
+    display: flex;
+    flex-direction: row;
+    /*justify-content: space-evenly;*/
+    width: 100%;
+    position: unset;
+    margin-bottom: 50px;
+    padding: 25px 0 0;
+}
+#year__dropdown__label{
+    display: inline-block;
+    position: unset;
+    align-self: center;
+    font-size: 25px;
+    transform-origin: unset;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    vertical-align: middle;
+    padding: 16px 10px 0;
+}
+.umg__calendar .umg__labels{
+    width: 120px;
+    border-radius: 15px;
+    border: 1px solid #CECECE;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 18px;
+    height: 50px;
+}
+.form-control-container{
+    display: flex;
+}
+
+.umg__calendar__dropdowns .MuiMenu-paper {
+    transition: none;
+  }

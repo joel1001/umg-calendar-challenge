@@ -2,15 +2,11 @@ import {
   useEffect,
   useState,
   useCallback,
-  MouseEvent,
   ChangeEvent,
   MouseEventHandler,
+  MouseEvent
 } from "react";
 import ReminderIcon from "../../../assets/images/reminder-icon.png";
-import {
-  VerticalTimeline,
-  VerticalTimelineElement,
-} from "react-vertical-timeline-component";
 import "react-vertical-timeline-component/style.min.css";
 import {
   eachDayOfInterval,
@@ -18,26 +14,8 @@ import {
   endOfMonth,
   startOfWeek,
   endOfWeek,
-  format,
-  isSameMonth,
 } from "date-fns";
-import {
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-  Button,
-} from "@mui/material";
-import { TimePicker } from "@mui/x-date-pickers";
 import { useSelector, useDispatch } from "react-redux";
-import { CiEdit } from "react-icons/ci";
-import { MdDelete } from "react-icons/md";
-import { CiCirclePlus } from "react-icons/ci";
 
 import { IReminder } from "../../../redux/slices/slice-interface";
 import {
@@ -47,6 +25,10 @@ import {
 } from "../../../redux/slices/slice";
 import { UmgCalendarState } from "./umg-calendar-interface";
 import "./umg-calendar.css";
+import CalendarTable from "../umg-calendar-table/umg-calendar-table";
+import VerticalTime from "../../molecules/umg-vertical-time-elem/umg-vertical-time-elem";
+import ReminderCard from "../umg-reminder-card/umg-reminder-card";
+import UmgFormControl from "../umg-form-control/umg-form-control";
 
 const UMGCalendar = () => {
   const reminders = useSelector((state: any) => state.reminders);
@@ -65,16 +47,6 @@ const UMGCalendar = () => {
     "November",
     "December",
   ];
-  const daysNames = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth();
 
@@ -84,11 +56,12 @@ const UMGCalendar = () => {
     days: [],
     displayDayReminderModal: false,
     dayNumber: 0,
-    saveReminderTime: "",
+    saveReminderTimeDatePicker: "",
     reminderText: "",
     locationText: "",
     showEditModal: false,
     reminderDayIndexer: 0,
+    elementToIndexertoEdit: 0
   });
 
   const years = Array.from({ length: 41 }, (_, index) => 2004 + index);
@@ -113,21 +86,30 @@ const UMGCalendar = () => {
   }, [
     umgCalendarState.selectedYear,
     umgCalendarState.selectedMonth,
+    umgCalendarState.dayNumber,
     reminders,
   ]);
 
-  const handleYearClicked = useCallback(
-    (value: object) => {
+  const handleMonthClicked = useCallback(
+    (selectedMonth: number) => {
       setUmgCalendarState((prevState) => ({
         ...prevState,
-        ...value,
+        selectedMonth,
       }));
     },
     [reminders]
   );
 
+  const handleYearClicked = useCallback(
+    (selectedYear: number) => {
+      setUmgCalendarState((prevState) => ({
+        ...prevState,
+        selectedYear,
+      }));
+    },
+    [reminders]
+  );
   const addDayEvent: MouseEventHandler<SVGElement> = useCallback((event) => {
-    debugger
     const target = event.target as SVGElement;
     const tdParent = target.parentNode as HTMLElement;
 
@@ -139,19 +121,18 @@ const UMGCalendar = () => {
 
     setUmgCalendarState((prevState) => ({
       ...prevState,
-      dayNumber: dayNumber,
+      dayNumber: parseInt(dayNumber),
       displayDayReminderModal: true,
     }));
   }, []);
+
   const saveReminderTime = (time: any) => {
     const hours = time.$d.getHours();
     const minutes = time.$d.getMinutes();
-    const formattedTime = `${hours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}`;
+    const formattedTime = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
     setUmgCalendarState((prevState) => ({
       ...prevState,
-      saveReminderTime: formattedTime,
+      saveReminderTimeDatePicker: formattedTime,
     }));
   };
 
@@ -176,63 +157,66 @@ const UMGCalendar = () => {
     }));
   };
 
-  const displayEditModal = (reminderIndex: number) => {
-    setUmgCalendarState((prevState) => ({
-      ...prevState,
-      showEditModal: true,
-      reminderDayIndexer: reminderIndex,
-    }));
+  const displayEditModal = (e: MouseEvent<SVGElement>, reminderIndex: number) => {
+    const target = e.target as SVGElement;
+    const tdParent = target.parentNode as HTMLElement;
+    const daySelectedToShare = tdParent?.parentNode?.parentNode?.parentNode?.childNodes[1]?.nodeValue
+    if(daySelectedToShare){
+      setUmgCalendarState((prevState) => ({
+        ...prevState,
+        showEditModal: true,
+        reminderDayIndexer: reminderIndex,
+        elementToIndexertoEdit: parseInt(daySelectedToShare)
+      }));
+    }
   };
 
-  const editReminderAsync = () => {
-    debugger
+  const editReminderAsync: MouseEventHandler<HTMLButtonElement> = (e) => {
     setUmgCalendarState((prevState) => ({
       ...prevState,
       showEditModal: false,
     }));
 
     const remiderDetailsToUpdate = {
-      reminderTime: umgCalendarState.saveReminderTime,
+      reminderTime: umgCalendarState.saveReminderTimeDatePicker,
       reminderLocation: umgCalendarState.locationText,
       reminderDescription: umgCalendarState.reminderText,
     };
-    dispatch(
-      editReminder({
-        year: umgCalendarState.selectedYear,
-        month: umgCalendarState.selectedMonth,
-        day:
-          typeof umgCalendarState.dayNumber === "string"
-            ? parseInt(umgCalendarState.dayNumber)
-            : umgCalendarState.dayNumber,
-        reminderIndex: umgCalendarState.reminderDayIndexer,
-        reminderToUpdate: remiderDetailsToUpdate,
-      })
-    );
+      dispatch(
+        editReminder({
+          year: umgCalendarState.selectedYear,
+          month: umgCalendarState.selectedMonth,
+          day: umgCalendarState.elementToIndexertoEdit,
+          reminderIndex: umgCalendarState.reminderDayIndexer,
+          reminderToUpdate: remiderDetailsToUpdate,
+        })
+      );
   };
 
-  const deleteReminderFromTable = (idx: number) => {
-    setUmgCalendarState((prevState) => ({
-      ...prevState,
-      displayDayReminderModal: false,
-    }));
-    const remiderDetailsToUpdate = {
-      reminderTime: umgCalendarState.saveReminderTime,
-      reminderLocation: umgCalendarState.locationText,
-      reminderDescription: umgCalendarState.reminderText,
-    };
-    dispatch(
-      deleteReminder({
-        year: umgCalendarState.selectedYear,
-        month: umgCalendarState.selectedMonth,
-        day:
-          typeof umgCalendarState.dayNumber === "string"
-            ? parseInt(umgCalendarState.dayNumber)
-            : umgCalendarState.dayNumber,
-        reminderIndex: idx,
-        reminderToUpdate: remiderDetailsToUpdate,
-      })
-    );
+  const deleteReminderFromTable = (event: MouseEvent<SVGElement>, idx: number) => {
+    const target = event.target as SVGElement;
+    const tdParent = target.parentNode as HTMLElement;
+    const dayToDeleteReminder = tdParent?.parentNode?.parentNode?.parentNode?.parentNode?.childNodes[1]?.nodeValue;
+    
+    if (dayToDeleteReminder) {
+        const reminderDetailsToUpdate = {
+        reminderTime: umgCalendarState.saveReminderTimeDatePicker,
+        reminderLocation: umgCalendarState.locationText,
+        reminderDescription: umgCalendarState.reminderText,
+      };
+  
+      dispatch(
+        deleteReminder({
+          year: umgCalendarState.selectedYear,
+          month: umgCalendarState.selectedMonth,
+          day: parseInt(dayToDeleteReminder),
+          reminderIndex: idx,
+          reminderToUpdate: reminderDetailsToUpdate,
+        })
+      );
+    }
   };
+  
 
   const storeReminderAndData = () => {
     if (umgCalendarState.dayNumber) {
@@ -250,7 +234,7 @@ const UMGCalendar = () => {
             [dayNumber]: [
               ...(reminders[selectedYear]?.[selectedMonth]?.[dayNumber] || []),
               {
-                reminderTime: umgCalendarState.saveReminderTime,
+                reminderTime: umgCalendarState.saveReminderTimeDatePicker,
                 reminderLocation: umgCalendarState.locationText,
                 reminderDescription: umgCalendarState.reminderText,
               },
@@ -263,9 +247,6 @@ const UMGCalendar = () => {
     }
   };
 
-  let dayCounter = 0;
-  let tdelem;
-
   return (
     <div className="umg__calendar">
       <div className="calendar__header">
@@ -273,129 +254,31 @@ const UMGCalendar = () => {
         <img src={ReminderIcon} alt="Reminder Icon" />
         <span>UMG Remider Calendar</span>
       </div>
-      <FormControl className="umg__calendar__dropdowns">
-        <InputLabel id="year__dropdown__label">Select Year:</InputLabel>
-        <Select
-          onChange={(e) =>
-            handleYearClicked({ selectedYear: e.target.value as number })
-          }
-          className="umg__labels"
-          labelId="year__dropdown__label"
-          value={umgCalendarState.selectedYear}
-        >
-          {years.map((year, index) => (
-            <MenuItem key={index} value={year}>
-              {year}
-            </MenuItem>
-          ))}
-        </Select>
-
-        <InputLabel id="year__dropdown__label">Select Month:</InputLabel>
-        <Select
-          onChange={(e) =>
-            handleYearClicked({ selectedMonth: e.target.value as number })
-          }
-          className="umg__labels"
-          labelId="year__dropdown__label"
-          value={umgCalendarState.selectedMonth}
-        >
-          {monthsNames.map((month, index) => (
-            <MenuItem key={index} value={index}>
-              {month}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <div className="form-control-container">
+        <UmgFormControl
+            handleClick={handleYearClicked}
+            inputTitle='Select Year:'
+            dropdownData={years}
+            defaultValue={umgCalendarState.selectedYear}
+            returnItem
+        />
+        <UmgFormControl
+            handleClick={handleMonthClicked}
+            inputTitle='Select Month:'
+            dropdownData={monthsNames}
+            defaultValue={umgCalendarState.selectedMonth}
+            returnItem={false}
+        />
+      </div>
       <div className="umg__calendar__container">
         <div className="calendar__table">
-          <table>
-            <thead>
-              <tr>
-                {daysNames.map((day, idx) => (
-                  <th key={idx}>{day}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {[...Array(6)].map((_, weekIndex) => {
-                const startIdx = weekIndex * 7;
-                const endIdx = startIdx + 7;
-                const weekDays = umgCalendarState.days.slice(startIdx, endIdx);
-
-                if (
-                  !weekDays.some((day) =>
-                    isSameMonth(
-                      day,
-                      new Date(
-                        umgCalendarState.selectedYear,
-                        umgCalendarState.selectedMonth
-                      )
-                    )
-                  )
-                ) {
-                  return null;
-                }
-                return (
-                  <tr key={weekIndex}>
-                    {weekDays.map((day, dayIndex) => {
-                      if (
-                        !day ||
-                        !isSameMonth(
-                          day,
-                          new Date(
-                            umgCalendarState.selectedYear,
-                            umgCalendarState.selectedMonth
-                          )
-                        )
-                      ) {
-                        return <td key={`${weekIndex}-${dayIndex}`}></td>;
-                      } else {
-                        dayCounter++;
-                        tdelem = (
-                          <td key={`${weekIndex}-${dayIndex}`}>
-                            <CiCirclePlus className='umg__plus__icon' onClick={addDayEvent} />
-                            {format(day, "d")}
-                            {reminders[umgCalendarState.selectedYear] &&
-                            reminders[umgCalendarState.selectedYear][
-                              umgCalendarState.selectedMonth
-                            ] &&
-                            reminders[umgCalendarState.selectedYear][
-                              umgCalendarState.selectedMonth
-                            ][dayCounter] ? (
-                              <div className="umg__reminder__wrapper">
-                                {reminders[umgCalendarState.selectedYear][
-                                  umgCalendarState.selectedMonth
-                                ][dayCounter].map(
-                                  (reminder: any, idx: number) => (
-                                    <div className="umg__reminder__container">
-                                      <div className="umg__remider">
-                                        {reminder.reminderTime}
-                                      </div>
-                                      <div className="umg__details__icons">
-                                        <CiEdit
-                                          onClick={() => displayEditModal(idx)}
-                                        />
-                                        <MdDelete
-                                          onClick={() =>
-                                            deleteReminderFromTable(idx)
-                                          }
-                                        />
-                                      </div>
-                                    </div>
-                                  )
-                                )}
-                              </div>
-                            ) : null}
-                          </td>
-                        );
-                        return tdelem;
-                      }
-                    })}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+            <CalendarTable
+                umgCalendarState={umgCalendarState}
+                addDayEvent={addDayEvent}
+                reminders={reminders}
+                displayEditModal={displayEditModal}
+                deleteReminderFromTable={deleteReminderFromTable}
+            />
         </div>
         <div className="caldendar__details">
           <div className="calendar__details_header">
@@ -422,135 +305,43 @@ const UMGCalendar = () => {
           reminders[umgCalendarState.selectedYear][
             umgCalendarState.selectedMonth
           ][umgCalendarState.dayNumber || 0] ? (
-            <VerticalTimeline layout={"1-column-left"}>
-              {reminders[umgCalendarState.selectedYear][
-                umgCalendarState.selectedMonth
-              ][umgCalendarState.dayNumber || 0].map(
-                (reminder: any, i: number) => (
-                  <VerticalTimelineElement
-                    className="vertical-timeline-element--work"
-                    iconStyle={{
-                      background: "rgb(33, 150, 243)",
-                      color: "#fff",
-                    }}
-                    icon={<img src={ReminderIcon} alt="myLogo" />}
-                  >
-                    <h3 className="vertical-timeline-element-title">
-                      {reminder.reminderTime}
-                    </h3>
-                    <h4 className="vertical-timeline-element-subtitle">
-                      {reminder.reminderDescription}
-                    </h4>
-                    <p>{reminder.reminderLocation}</p>
-                  </VerticalTimelineElement>
-                )
-              )}
-            </VerticalTimeline>
+            <VerticalTime
+                reminders={reminders}
+                umgCalendarState={umgCalendarState}
+                icon={<img src={ReminderIcon} alt="myLogo" />}
+            />    
           ) : null}
         </div>
       </div>
 
-      <Dialog
-        open={umgCalendarState.displayDayReminderModal}
-        onClose={() => closeModal({ displayDayReminderModal: false })}
-        className="dialog__box"
-        maxWidth="xl"
-      >
-        <DialogTitle>{`Add reminder to ${
-          monthsNames[umgCalendarState.selectedMonth]
-        } - ${umgCalendarState.dayNumber}`}</DialogTitle>
-        <DialogContent
-          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-        >
-          <TimePicker
-            ampm
-            label="Select Time"
-            value={umgCalendarState.saveReminderTime}
-            onChange={saveReminderTime}
-            renderInput={(params) => <TextField fullWidth {...params} />}
-          />
-          <TextField
-            margin="dense"
-            label="Reminder Description"
-            type="text"
-            fullWidth
-            value={umgCalendarState.reminderText}
-            onChange={updateReminderDescription}
-            inputProps={{ maxLength: 30 }}
-          />
-          <TextField
-            margin="dense"
-            label="Reminder Location"
-            type="text"
-            fullWidth
-            value={umgCalendarState.locationText}
-            onChange={updateLocationDescription}
-            inputProps={{ maxLength: 30 }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => closeModal({ displayDayReminderModal: false })}
-          >
-            Cancel
-          </Button>
-          <Button onClick={storeReminderAndData}>Add Reminder</Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={umgCalendarState.showEditModal}
-        onClose={() => closeModal({ showEditModal: false })}
-        maxWidth="xl"
-      >
-        <DialogTitle>{`Edit Reminder ${
-          monthsNames[umgCalendarState.selectedMonth]
-        } - ${umgCalendarState.dayNumber} reminder number ${
-          umgCalendarState.reminderDayIndexer + 1
-        }`}</DialogTitle>
-        <DialogContent
-          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-        >
-          <TimePicker
-            ampm
-            label="Select Time"
-            value={umgCalendarState.saveReminderTime}
-            onChange={saveReminderTime}
-            renderInput={(params) => <TextField fullWidth {...params} />}
-          />
-          <TextField
-            margin="dense"
-            label="Reminder Description"
-            type="text"
-            fullWidth
-            value={umgCalendarState.reminderText}
-            onChange={updateReminderDescription}
-            inputProps={{ maxLength: 30 }}
-          />
-          <TextField
-            margin="dense"
-            label="Reminder Location"
-            type="text"
-            fullWidth
-            value={umgCalendarState.locationText}
-            onChange={updateLocationDescription}
-            inputProps={{ maxLength: 30 }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() =>
-              closeModal({
-                showEditModal: false,
-                displayDayReminderModal: false,
-              })
-            }
-          >
-            Cancel
-          </Button>
-          <Button onClick={editReminderAsync}>Edit Reminder</Button>
-        </DialogActions>
-      </Dialog>
+      <ReminderCard
+         umgCalendarState={umgCalendarState}
+         closeModal={closeModal}
+         saveReminderTime={saveReminderTime}
+         updateReminderDescription={updateReminderDescription}
+         updateLocationDescription={updateLocationDescription}
+         storeReminderAndData={storeReminderAndData}
+         reminderCardDialogs={{title: `Add reminder to ${
+            monthsNames[umgCalendarState.selectedMonth]
+          } - ${umgCalendarState.dayNumber}`, primaryButton: 'Cancel', secondaryButton: 'Add Reminder'}}
+          open={umgCalendarState.displayDayReminderModal}
+          dialogToClose={{displayDayReminderModal: false}}
+      />
+        <ReminderCard
+            umgCalendarState={umgCalendarState}
+            closeModal={closeModal}
+            saveReminderTime={saveReminderTime}
+            updateReminderDescription={updateReminderDescription}
+            updateLocationDescription={updateLocationDescription}
+            storeReminderAndData={editReminderAsync}
+            reminderCardDialogs={{title: `Edit Reminder ${
+                monthsNames[umgCalendarState.selectedMonth]
+              } - ${umgCalendarState.dayNumber} reminder number ${
+                umgCalendarState.reminderDayIndexer + 1
+              }`, primaryButton: 'Cancel', secondaryButton: 'Edit Reminder'}}
+              open={umgCalendarState.showEditModal}
+            dialogToClose={{showEditModal: false}}
+        />
     </div>
   );
 };

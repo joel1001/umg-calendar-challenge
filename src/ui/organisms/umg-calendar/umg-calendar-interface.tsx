@@ -3,10 +3,11 @@ export type UmgCalendarState = {
     selectedMonth: number;
     days: Date[];
     displayDayReminderModal: boolean;
-    dayNumber: number | string | null;
-    saveReminderTime: string;
+    dayNumber: number;
+    saveReminderTimeDatePicker: string;
     reminderText: string;
     locationText: string;
     showEditModal: boolean;
     reminderDayIndexer: number;
+    elementToIndexertoEdit: number
 };
