@@ -1,0 +1,43 @@
+svg.umg__plus__icon{
+    font-size: 25px;
+    fill: green;
+    color: green;
+    position: relative;
+    top: 8%;
+    left: 40%;
+}
+
+td:hover .umg__reminder__wrapper .umg__reminder__details, td:active .umg__reminder__wrapper .umg__reminder__details{
+    background-color: #eafcd4;
+    opacity: 1;
+    z-index: 1000;
+}
+
+.umg__reminder__wrapper{
+    margin-top: 15px;
+}
+
+.umg__reminder__container {
+    background-color: blanchedalmond;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 15px;
+    overflow-y: auto;
+    border: 1px solid #CECECE;
+    border-radius: 15px;
+}
+
+.umg__remider svg {
+    margin-left: 15px;
+}
+
+.umg__details__icons svg {
+    margin-left: 10px;
+    height: 100%;
+    font-size: 22px;
+}
+
+svg{
+    cursor: pointer;
+}

@@ -44,3 +44,39 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+## Dependencies
+
+- **@emotion/react** (^11.11.4)
+- **@emotion/styled** (^11.11.5)
+- **@mui/icons-material** (^5.14.6)
+- **@mui/material** (^5.15.16)
+- **@mui/styled-engine-sc** (^6.0.0-alpha.18)
+- **@mui/x-date-pickers** (^5.0.12)
+- **@reduxjs/toolkit** (^2.2.3)
+- **@testing-library/jest-dom** (^5.17.0)
+- **@testing-library/react** (^13.4.0)
+- **@testing-library/user-event** (^13.5.0)
+- **@types/jest** (^27.5.2)
+- **@types/node** (^16.18.97)
+- **@types/react** (^18.3.1)
+- **@types/react-dom** (^18.3.0)
+- **date-fns** (^2.30.0)
+- **dayjs** (^1.11.11)
+- **react** (^18.3.1)
+- **react-colorful** (^5.6.1)
+- **react-dom** (^18.3.1)
+- **react-icons** (^5.2.1)
+- **react-redux** (^9.1.0)
+- **react-router-dom** (^6.23.0)
+- **react-scripts** (5.0.1)
+- **react-vertical-timeline-component** (^3.6.0)
+- **redux-persist** (^6.0.0)
+- **styled-components** (^6.1.9)
+- **typescript** (^4.9.5)
+- **web-vitals** (^2.1.4)
+
+## Dev Dependencies
+
+- **@types/react-vertical-timeline-component** (^3.3.6)
+
