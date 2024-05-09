@@ -8,4 +8,5 @@ export type UmgCalendarState = {
     reminderText: string;
     locationText: string;
     showEditModal: boolean;
+    reminderDayIndexer: number;
 };

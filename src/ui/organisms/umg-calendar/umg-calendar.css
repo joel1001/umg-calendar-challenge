@@ -188,7 +188,6 @@ td:active,
 td:hover {
     background-color: #d4eafc;
     opacity: 0.5;
-    cursor: pointer;
 }
 td:hover .umg__reminder__wrapper .umg__reminder__details, td:active .umg__reminder__wrapper .umg__reminder__details{
     background-color: #eafcd4;
@@ -197,48 +196,46 @@ td:hover .umg__reminder__wrapper .umg__reminder__details, td:active .umg__remind
 }
 
 .umg__reminder__wrapper{
-    overflow-y: auto;
-}
-
-.umg__remider{
-    background-color: blanchedalmond;
-    border-radius: 10px;
+    margin-top: 15px;
 }
 
 .umg__remider svg {
     margin-left: 15px;
 }
 
-.umg__reminder__details {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    border-radius: 15px;
-    display: none;
-    min-width: 173px;
-    min-height: 40px;
-    position: absolute;
-    top: 20%;
-    left: 0%;
-    background-color: #eafcd4;
-    border: 1px solid #ccc;
-    opacity: 1;
-    z-index: 1000;
-    align-items: center;
-    justify-content: space-evenly;
-  }
-  
 
 .umg__remider__location{
     margin-right: 15px;
     height: 100%;
 }
 
-.umg__reminder__container:hover .umg__reminder__details,
-.umg__reminder__container:focus .umg__reminder__details {
+.umg__reminder__container {
+    background-color: blanchedalmond;
+
     display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 15px;
+    overflow-y: auto;
+    border: 1px solid #CECECE;
+    border-radius: 15px;
 }
 
 .umg__details__icons svg {
     margin-left: 10px;
     height: 100%;
     font-size: 22px;
+}
+
+svg{
+    cursor: pointer;
+}
+
+svg.umg__plus__icon{
+    font-size: 25px;
+    fill: green;
+    color: green;
+    position: relative;
+    top: 8%;
+    left: 40%;
 }
